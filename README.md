@@ -1,2 +1,2 @@
 # hiloproject
-Learn Spanish the 糸。(hilo/thread) way. 
+Learn Spanish the 糸。(ito/hilo/thread) way. 
