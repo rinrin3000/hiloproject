@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#17130f">
+<title>Habla — Hilo.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#17130f;--card:#221c17;--card2:#2c241d;--line:#3a3028;--text:#f0e7d8;--dim:#9c8f7e;
+  --grana:#d9574a;--anil:#7fa6d6;--oro:#e2a83f;--verde:#7fb36a;--gap:16px}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font-family:'Nunito Sans',system-ui,sans-serif;font-size:16px;line-height:1.5;
+  min-height:100vh;padding:0 var(--gap) 90px}
+a{color:var(--anil)}
+.top{display:flex;align-items:center;gap:10px;padding:14px 0 10px;max-width:640px;margin:0 auto}
+.pill{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:20px;color:var(--text);text-decoration:none;
+  border:1px solid var(--line);border-radius:999px;padding:3px 13px 4px;background:var(--card)}
+.pill b{color:var(--grana)}
+.apptitle{font-family:'Fraunces',Georgia,serif;font-size:22px;font-weight:600;letter-spacing:.01em}
+.tabs{display:flex;gap:6px;max-width:640px;margin:0 auto 14px;overflow-x:auto}
+.tabs button{flex:1;white-space:nowrap}
+.tabs button.on{background:var(--grana);border-color:var(--grana);color:#fff}
+main{max-width:640px;margin:0 auto}
+button{background:var(--card2);border:1px solid var(--line);color:var(--text);font-family:inherit;font-size:14px;
+  padding:9px 14px;border-radius:999px;cursor:pointer}
+button:active{border-color:var(--grana)}
+button.big{font-size:16px;padding:13px 18px;border-radius:14px}
+button.pri{background:var(--grana);border-color:var(--grana);color:#fff}
+button.ghost{background:none}
+button:disabled{opacity:.4}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}
+.sec{font-size:11px;color:var(--anil);letter-spacing:.16em;text-transform:uppercase;margin:20px 0 8px}
+.dim{color:var(--dim)}
+.note{color:var(--dim);font-size:13px;line-height:1.7;margin-top:10px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips button{padding:7px 11px;font-size:13px}
+.chips button.on{border-color:var(--oro);color:var(--oro)}
+.es{font-family:'Fraunces',Georgia,serif}
+.tag{display:inline-block;font-size:11px;color:var(--dim);border:1px solid var(--line);border-radius:6px;padding:0 6px;margin-left:6px;vertical-align:middle}
+.star{background:none;border:none;font-size:20px;color:var(--oro);padding:4px 8px}
+select,textarea,input[type=number],input[type=text]{background:var(--card2);color:var(--text);border:1px solid var(--line);
+  border-radius:10px;padding:8px 10px;font-family:inherit;font-size:14px;max-width:100%}
+textarea{width:100%;min-height:90px}
+input[type=range]{width:100%;accent-color:var(--grana)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--card2);border:1px solid var(--oro);
+  color:var(--text);padding:10px 16px;border-radius:12px;font-size:14px;z-index:50;max-width:90vw;text-align:center}
+.hide{display:none!important}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--line);font-size:14px}
+.kv:last-child{border-bottom:none}
+@media (max-width:420px){button{padding:8px 11px}.apptitle{font-size:19px}}
+
+.stage{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 18px;min-height:320px;display:flex;flex-direction:column;justify-content:center;text-align:center;gap:16px}
+.cue{font-size:22px;line-height:1.4}
+.cue .note2{display:block;font-size:13px;color:var(--dim);margin-top:6px}
+.ans{font-family:'Fraunces',Georgia,serif;font-size:27px;line-height:1.35;min-height:1.4em}
+.ans.wait{color:var(--line)}
+.phase{font-size:11px;letter-spacing:.16em;color:var(--anil);text-transform:uppercase}
+.bar{height:5px;border-radius:5px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--oro)}
+.ctl{display:flex;gap:8px;justify-content:center;margin-top:14px}
+.ctl button{font-size:18px;padding:12px 18px;border-radius:14px}
+.slot{color:var(--grana);font-weight:600}
+.lesson{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:10px;overflow:hidden}
+.lh{display:flex;align-items:center;gap:8px;padding:12px 14px;cursor:pointer}
+.lh .t{flex:1}.lh b{font-family:'Fraunces',Georgia,serif;font-size:17px;font-weight:600}
+.lh .c{font-size:12px;color:var(--dim)}
+.lb{border-top:1px solid var(--line);padding:4px 12px 10px}
+.d{padding:10px 0;border-bottom:1px solid var(--line)}
+.d:last-child{border-bottom:none}
+.d .es{font-size:17px}
+.d .en{font-size:13px;color:var(--dim)}
+.d .sw{font-size:13px;color:var(--dim);margin-top:4px}
+.d .sw span{display:inline-block;background:var(--card2);border-radius:6px;padding:1px 7px;margin:3px 4px 0 0;color:var(--text);cursor:pointer}
+.dots{font-size:11px;color:var(--verde);letter-spacing:2px}
+.card2{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 18px;min-height:280px;display:flex;flex-direction:column}
+.card2 .front{flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center;gap:12px}
+.prog{height:4px;background:var(--line);border-radius:4px;overflow:hidden;margin-bottom:10px}
+.prog i{display:block;height:100%;background:var(--grana)}
+</style>
+</head>
+<body>
+<div class="top"><a class="pill" href="index.html">Hilo<b>.</b></a><span class="apptitle">Habla</span></div>
+<div class="tabs" id="tabs">
+  <button data-t="manos" class="on">Manos libres</button><button data-t="tarjetas">Tarjetas</button><button data-t="lista">Lista</button><button data-t="ajustes">Ajustes</button>
+</div>
+<main id="main"></main>
+<script>
+(function(){
+/* ===== Hilo core (inlined into every app, inside the app's IIFE) ===== */
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const DAY=864e5, now=()=>Date.now();
+const eod=()=>{const d=new Date();d.setHours(24,0,0,0);return d.getTime();};   // next local midnight
+const sod=()=>eod()-DAY;
+function toast(msg,ms){const t=document.createElement("div");t.className="toast";t.textContent=msg;document.body.appendChild(t);
+  setTimeout(()=>t.remove(),ms||2200);}
+function load(key,def){try{const v=JSON.parse(localStorage.getItem(key));return v&&typeof v==="object"?Object.assign(def,v):def;}catch(e){return def;}}
+function store(key,obj){try{localStorage.setItem(key,JSON.stringify(obj));return true;}catch(e){toast("Could not save progress (storage blocked?)");return false;}}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+/* shared "my lesson" across the three apps */
+function getLevel(){try{const v=parseInt(localStorage.getItem("hilo_level"));return v>0?v:1;}catch(e){return 1;}}
+function setLevel(n){try{localStorage.setItem("hilo_level",String(n));}catch(e){}}
+
+/* ===== robust TTS (Ito's 文型 engine, adapted for Spanish) ===== */
+const TTSCFG={esURI:"",enURI:""};
+let ESV=null,ENV=null,unlocked=false,speakToken=0,noEs=false,voicesSettled=false,currentU=null;
+function allVoices(){try{return speechSynthesis.getVoices()||[]}catch(e){return[]}}
+const isEs=v=>v.lang.replace("_","-").toLowerCase().startsWith("es");
+function pickVoices(){const vs=allVoices();
+  const lat=v=>/es-(mx|us|419|co|ar|cl|pe)/i.test(v.lang.replace("_","-"));
+  ESV=(TTSCFG.esURI&&vs.find(v=>v.voiceURI===TTSCFG.esURI))
+    ||vs.find(v=>/Google/i.test(v.name)&&lat(v))
+    ||vs.find(v=>/Paulina|Juan|Sabina|Dalia|Jorge/i.test(v.name)&&isEs(v))
+    ||vs.find(v=>lat(v))||vs.find(v=>/Google/i.test(v.name)&&isEs(v))||vs.find(isEs)||null;
+  ENV=(TTSCFG.enURI&&vs.find(v=>v.voiceURI===TTSCFG.enURI))
+    ||vs.find(v=>/Google/i.test(v.name)&&v.lang.startsWith("en"))
+    ||vs.find(v=>/Samantha|Jenny|Aria|Zira/i.test(v.name)&&v.lang.startsWith("en"))
+    ||vs.find(v=>v.lang.startsWith("en"))||null;
+  noEs=vs.length>0&&!ESV;}
+async function ensureVoices(){for(let i=0;i<20;i++){if(allVoices().length)break;await new Promise(r=>setTimeout(r,120));}
+  pickVoices();voicesSettled=true;}
+function esWarnHTML(){return `<div class="box" id="es-warn" style="border-color:var(--grana)">
+  ⚠ <b>No Spanish voice found in this browser.</b> Audio will be silent until one is installed.
+  <div class="note">• <b>iPhone/iPad:</b> Settings → Accessibility → Spoken Content → Voices → Spanish (Mexico) → <b>Paulina</b><br>
+  • <b>Mac:</b> System Settings → Accessibility → Spoken Content → System voice → Manage voices → Spanish<br>
+  • <b>Windows:</b> Settings → Time &amp; Language → Language → add Español (México) with speech, or use Chrome/Edge<br>
+  • <b>Android:</b> Settings → Google Text-to-speech → install Spanish<br>Then reload.</div></div>`;}
+if(typeof speechSynthesis!=="undefined"){speechSynthesis.onvoiceschanged=()=>pickVoices();pickVoices();
+  ensureVoices().then(()=>{const m=$("main");if(noEs&&m&&!$("#es-warn"))m.insertAdjacentHTML("afterbegin",esWarnHTML());});}
+function unlock(){if(unlocked)return;unlocked=true;
+  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance("a");u.volume=0;speechSynthesis.speak(u);}catch(e){}}
+document.addEventListener("touchstart",unlock,{once:true});
+document.addEventListener("click",unlock,{once:true});
+function stopSpeech(){speakToken++;try{speechSynthesis.cancel();}catch(e){}}
+/* speak(text, "es"|"en", rate, {pitch}) → Promise resolved when done (or watchdog fires) */
+function speak(text,lang="es",rate=0.95,opt={},_retry=false){
+  const myToken=++speakToken, es=lang==="es";
+  text=String(text).replace(/[—«»]/g," ").replace(/\s+/g," ").trim();
+  if(!text)return Promise.resolve();
+  return new Promise(async res=>{
+    try{
+      if(typeof speechSynthesis==="undefined")return res();
+      if(!voicesSettled)await ensureVoices();
+      const busy=speechSynthesis.speaking||speechSynthesis.pending;
+      if(busy)speechSynthesis.cancel();
+      setTimeout(()=>{
+        if(myToken!==speakToken)return res();
+        pickVoices();
+        const u=new SpeechSynthesisUtterance(text);currentU=u;
+        u.lang=es?(ESV?ESV.lang:"es-MX"):"en-US";
+        let v=es?ESV:ENV,r=es?rate:1.0;
+        if(_retry){r=1.0;if(es){const alt=allVoices().find(x=>isEs(x)&&v&&x.localService!==v.localService);if(alt)v=alt;}}
+        if(v)u.voice=v;
+        u.rate=Math.max(0.6,r);u.pitch=opt.pitch||1;
+        let done=false,started=false;
+        const kick=setInterval(()=>{try{speechSynthesis.resume()}catch(e){}},2500);
+        const finish=()=>{if(done)return;done=true;clearInterval(kick);res();};
+        u.onstart=()=>{started=true};u.onend=finish;u.onerror=finish;
+        setTimeout(finish,600+text.length*(es?80:75)/u.rate+1500);
+        setTimeout(()=>{if(!started&&!done&&!_retry){done=true;clearInterval(kick);try{speechSynthesis.cancel()}catch(e){}
+          setTimeout(()=>speak(text,lang,1.0,opt,true).then(res),160);}},1400);
+        speechSynthesis.speak(u);
+        setTimeout(()=>{try{speechSynthesis.resume()}catch(e){}},120);
+      },busy?230:40);
+    }catch(e){res();}
+  });
+}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+/* voice settings block (rendered inside each app's settings tab) */
+function voiceUI(cfg,saveFn){
+  const vs=allVoices();
+  const opts=(f,cur)=>`<option value="">Automatic</option>`+vs.filter(f).map(v=>`<option value="${esc(v.voiceURI)}"${v.voiceURI===cur?" selected":""}>${esc(v.name)} (${esc(v.lang)})</option>`).join("");
+  return `<div class="kv"><span>Spanish voice</span><select id="v-es">${opts(isEs,cfg.esURI)}</select></div>
+   <div class="kv"><span>English voice</span><select id="v-en">${opts(v=>v.lang.startsWith("en"),cfg.enURI)}</select></div>
+   <div class="row" style="margin-top:10px"><button id="v-test">🔊 Test</button><button id="v-reset">Reset audio</button></div>`;}
+function bindVoiceUI(cfg,saveFn){
+  const a=$("#v-es"),b=$("#v-en");if(!a)return;
+  a.onchange=()=>{cfg.esURI=a.value;TTSCFG.esURI=a.value;saveFn();pickVoices();speak("Hola, ¿qué tal?","es");};
+  b.onchange=()=>{cfg.enURI=b.value;TTSCFG.enURI=b.value;saveFn();pickVoices();speak("Hello!","en");};
+  $("#v-test").onclick=()=>speak("Hola, me llamo Kenji. ¿Cómo te llamas?","es");
+  $("#v-reset").onclick=()=>{try{speechSynthesis.cancel();speechSynthesis.resume();}catch(e){}setTimeout(()=>speak("Listo.","es"),250);};}
+
+/* ===== backup: copy / paste with per-app merge (shared with the hub) ===== */
+const BKEYS=["palabras_v1","habla_v1","lectura_v1","hilo_level"];
+const newer=(a,b)=>(!a?b:!b?a:((b.at||0)>(a.at||0)?b:a));
+function mergeMapNewer(A,B){const o=Object.assign({},A||{});for(const k in (B||{}))o[k]=newer(o[k],B[k]);return o;}
+function mergeKey(key,local,inc){
+  if(key==="hilo_level")return Math.max(+local||1,+inc||1);
+  if(!local)return inc; if(!inc)return local;
+  const o=Object.assign({},local);
+  if(key==="palabras_v1"){o.cards=mergeMapNewer(local.cards,inc.cards);o.miss=mergeMapNewer(local.miss,inc.miss);
+    o.star=Object.assign({},inc.star||{},local.star||{});}
+  if(key==="habla_v1"){o.d=mergeMapNewer(local.d,inc.d);o.star=Object.assign({},inc.star||{},local.star||{});}
+  if(key==="lectura_v1"){o.done=Object.assign({},inc.done||{},local.done||{});o.pos=mergeMapNewer(local.pos,inc.pos);
+    o.star=Object.assign({},inc.star||{},local.star||{});}
+  return o;}
+function exportJSON(keys){const out={hilo:1,at:new Date().toISOString(),keys:{}};
+  keys.forEach(k=>{try{const v=localStorage.getItem(k);if(v!=null)out.keys[k]=JSON.parse(v);}catch(e){}});return JSON.stringify(out);}
+function importJSON(txt,keys){let d;try{d=JSON.parse(txt.trim());}catch(e){return "That doesn't look like a Hilo backup.";}
+  if(!d||!d.keys)return "That doesn't look like a Hilo backup.";
+  let n=0;keys.forEach(k=>{if(!(k in d.keys))return;let cur=null;try{cur=JSON.parse(localStorage.getItem(k));}catch(e){}
+    const m=mergeKey(k,cur,d.keys[k]);try{localStorage.setItem(k,JSON.stringify(m));n++;}catch(e){}});
+  return n?"":"Nothing in that backup belongs to this app.";}
+async function copyText(t){try{await navigator.clipboard.writeText(t);return true;}catch(e){return false;}}
+function backupUI(){return `<div class="row"><button id="bk-copy">📋 Copy progress</button><button id="bk-paste">📥 Paste progress</button></div>
+  <div id="bk-area" class="hide" style="margin-top:10px"><textarea id="bk-text" placeholder="Paste a Hilo backup here"></textarea>
+  <div class="row" style="margin-top:8px"><button class="pri" id="bk-go">Merge into this device</button><button id="bk-x">Cancel</button></div></div>
+  <div class="note">Progress lives only in this browser. Copy it now and then (paste into a note or message to yourself) so a cleared browser or a new phone doesn't lose it. Pasting <b>merges</b>: the newer review of each card wins, nothing is deleted.</div>`;}
+function bindBackupUI(keys,after){
+  $("#bk-copy").onclick=async()=>{const t=exportJSON(keys);
+    if(await copyText(t)){toast("Copied! Paste it somewhere safe.");after&&after("copied");}
+    else{$("#bk-area").classList.remove("hide");$("#bk-text").value=t;$("#bk-text").select();toast("Select all and copy the text below.");}};
+  $("#bk-paste").onclick=()=>{$("#bk-area").classList.remove("hide");$("#bk-text").value="";$("#bk-text").focus();};
+  $("#bk-x").onclick=()=>$("#bk-area").classList.add("hide");
+  $("#bk-go").onclick=()=>{const err=importJSON($("#bk-text").value,keys);if(err){toast(err);return;}
+    toast("Merged ✓");setTimeout(()=>location.reload(),700);};}
+
+const LESSONS={"1": ["Hola, ¿qué tal?", "ser (soy/eres/es/somos/son), subject pronouns, llamarse (me llamo, te llamas, se llama)"], "2": ["Personas y cosas", "gender & number, el/la/los/las, un/una, adjective agreement, ser + description"], "3": ["¿Dónde está?", "estar (location), hay, prepositions of place, ¿qué hay? vs ¿dónde está?"], "4": ["Mi día", "presente regular -ar/-er/-ir, negation no, question words"], "5": ["Mi familia", "tener (incl. age, tener que), possessives (mi/tu/su already seen in L2) + nuestro"], "6": ["Me gusta", "gustar (me/te/le/nos/les gusta(n)), también/tampoco, a mí sí/no"], "7": ["Mi rutina", "reflexive verbs (levantarse…), telling time, days of the week"], "8": ["Quiero, puedo", "stem-changing presente: e→ie (querer, pensar, empezar, preferir), o→ue (poder, dormir, volver, costar), e→i (pedir, repetir); querer/poder + infinitive"], "9": ["Hago, salgo, vengo", "irregular yo forms (hago, salgo, pongo, traigo, sé, conozco) + ir, venir, decir; saber vs conocer; weather hace calor"], "10": ["Voy a…", "ir a + infinitive (plans), time expressions (mañana, el fin de semana, la próxima semana), muy vs mucho"], "11": ["¿Cuánto cuesta?", "ser vs estar (traits vs states), estar + gerundio, demonstratives este/ese/aquel"], "12": ["Ayer…", "pretérito regular (-ar/-er/-ir) + fui (ir/ser), ayer, anoche, la semana pasada"], "13": ["¿Qué hiciste?", "pretérito irregular: tuve, estuve, hice, pude, puse, vine, dije, quise, supe; hace + time (= ago)"], "14": ["Lo veo", "direct object pronouns lo/la/los/las, placement (lo quiero comprar / quiero comprarlo)"], "15": ["Te lo doy", "indirect object pronouns, se lo double pronouns, dar, traer, prestar"], "16": ["Cuando era niño", "imperfecto (habits, description in the past)"], "17": ["Una historia", "pretérito vs imperfecto in narration (estaba … cuando …)"], "18": ["Más que…", "comparatives & superlatives (más/menos … que, tan … como, el más, mejor/peor, -ísimo)"], "19": ["¡Pasa!", "imperativo afirmativo (tú/usted/ustedes)"], "20": ["¡No lo toques!", "imperativo negativo + pronoun placement (dímelo / no me lo digas)"], "21": ["¿Alguna vez…?", "pretérito perfecto (he comido) for experience & ya / todavía no"], "22": ["Mañana será…", "futuro simple (predictions, guesses), por vs para basics"], "23": ["Me gustaría…", "condicional (me gustaría, podría, debería, ¿podrías…?)"], "24": ["Acabo de llegar", "verbal periphrases (acabar de, volver a, dejar de, seguir + gerundio, soler), estaba + gerundio"], "25": ["Quiero que vengas", "presente de subjuntivo (forms) + querer/necesitar que"], "26": ["Ojalá", "subjuntivo: wishes & emotions (ojalá, espero que, me alegra que, me molesta que)"], "27": ["Te recomiendo que…", "subjuntivo: advice & value judgments (es importante que, te recomiendo que, es mejor que)"], "28": ["No creo que…", "subjuntivo: doubt vs certainty (creo que + ind. / no creo que + subj., es posible que, quizás)"], "29": ["Cuando llegues", "cuando / hasta que / antes de que / para que + subjuntivo"], "30": ["Busco a alguien que…", "relative clauses (que, donde, lo que, quien) + subjuntivo in relatives"], "31": ["Ya había salido", "pluscuamperfecto (había hecho)"], "32": ["Me dijo que…", "reported speech (dijo que…, me preguntó si…)"], "33": ["Si tuviera tiempo…", "imperfecto de subjuntivo (forms) + quería que, me pidió que"], "34": ["Si pudiera…", "conditional sentences (si + presente → futuro/presente; si + imperfecto subj. → condicional)"], "35": ["Se me olvidó", "se: impersonal (se dice), passive (se venden), accidental (se me cayó)"], "36": ["Por eso", "connectors (aunque, sin embargo, por eso, así que, además, en cambio), review finale"]};
+const DRILLS=[{"id":"H0101","L":1,"t":"Hola, ¿qué tal?","es":"Me llamo 【Kenji】.","en":"My name is *Kenji*. (lit. I call myself Kenji)","sw":[["Ana","Ana"],["Mateo","Mateo"],["Lucía","Lucía"]]},{"id":"H0102","L":1,"t":"Hola, ¿qué tal?","es":"¿Cómo 【te llamas】?","en":"What's *your* name? (lit. how do you call yourself?)","sw":[["se llama usted","your (formal)"],["se llama él","his"],["se llama ella","her"]]},{"id":"H0103","L":1,"t":"Hola, ¿qué tal?","es":"Soy 【de Japón】.","en":"I'm *from Japan*.","sw":[["de México","from Mexico"],["de Colombia","from Colombia"],["de Estados Unidos","from the United States"]]},{"id":"H0104","L":1,"t":"Hola, ¿qué tal?","es":"Soy 【japonés】.","en":"I'm *Japanese*. (man speaking)","sw":[["mexicano","Mexican"],["colombiano","Colombian"],["estadounidense","American"]]},{"id":"H0105","L":1,"t":"Hola, ¿qué tal?","es":"Ella es 【mexicana】.","en":"She's *Mexican*.","sw":[["japonesa","Japanese"],["colombiana","Colombian"],["española","Spanish"]]},{"id":"H0106","L":1,"t":"Hola, ¿qué tal?","es":"¿De dónde 【eres】?","en":"Where *are you* from? (informal)","sw":[["es usted","are you (formal)"],["es él","is he"],["son ustedes","are you all"]]},{"id":"H0107","L":1,"t":"Hola, ¿qué tal?","es":"【Nosotros somos】 estudiantes.","en":"*We are* students.","sw":[["Ellos son","They are"],["Ustedes son","You all are"],["Yo soy","I am"]]},{"id":"H0108","L":1,"t":"Hola, ¿qué tal?","es":"—¿Eres profesor? —No, 【soy estudiante】.","en":"\"Are you a teacher?\" \"No, *I'm a student*.\" (no \"a\" before jobs)","sw":[["soy de México","I'm from Mexico"],["me llamo Kenji","my name is Kenji"],["no soy profesor","I'm not a teacher"]]},{"id":"H0109","L":1,"t":"Hola, ¿qué tal?","es":"—¿Qué tal? —【Bien】, gracias.","en":"\"How's it going?\" \"*Fine*, thanks.\"","sw":[["Muy bien","Very well"],["Más o menos","So-so"],["Mal","Not well"]]},{"id":"H0110","L":1,"t":"Hola, ¿qué tal?","es":"【Mucho gusto】.","en":"*Nice to meet you*.","sw":[["Encantado","Delighted (man)"],["Encantada","Delighted (woman)"],["Igualmente","Likewise"]]},{"id":"H0111","L":1,"t":"Hola, ¿qué tal?","es":"【Buenos días】, señora.","en":"*Good morning*, ma'am.","sw":[["Buenas tardes","Good afternoon"],["Buenas noches","Good evening"],["Hola","Hi"]]},{"id":"H0112","L":1,"t":"Hola, ¿qué tal?","es":"Ana es de Colombia y 【Mateo también】.","en":"Ana is from Colombia, and *Mateo too*.","sw":[["yo también","me too"],["él también","him too"],["nosotros también","us too"]]},{"id":"H0113","L":1,"t":"Hola, ¿qué tal?","es":"No soy 【mexicano】, soy japonés.","en":"I'm not *Mexican*, I'm Japanese.","sw":[["colombiano","Colombian"],["español","Spanish"],["profesor","a teacher"]]},{"id":"H0114","L":1,"t":"Hola, ¿qué tal?","es":"【Uno, dos, tres】.","en":"*One, two, three*.","sw":[["cuatro, cinco, seis","four, five, six"],["siete, ocho, nueve","seven, eight, nine"],["diez, nueve, ocho","ten, nine, eight"]]},{"id":"H0201","L":2,"t":"Personas y cosas","es":"Es 【un libro】.","en":"It's *a book*.","sw":[["una mesa","a table"],["un celular","a cell phone"],["una computadora","a computer"]]},{"id":"H0202","L":2,"t":"Personas y cosas","es":"¿Qué es esto? —Es 【una llave】.","en":"What is this? —It's *a key*.","sw":[["un lápiz","a pencil"],["una bolsa","a bag"],["un cuaderno","a notebook"]]},{"id":"H0203","L":2,"t":"Personas y cosas","es":"【El libro】 es nuevo.","en":"*The book* is new.","sw":[["El carro","The car"],["La casa","The house"],["La computadora","The computer"]]},{"id":"H0204","L":2,"t":"Personas y cosas","es":"La casa es 【bonita】.","en":"The house is *pretty*. (feminine noun → -a)","sw":[["grande","big"],["pequeña","small"],["vieja","old"]]},{"id":"H0205","L":2,"t":"Personas y cosas","es":"El carro es 【rojo】.","en":"The car is *red*.","sw":[["blanco","white"],["negro","black"],["azul","blue"]]},{"id":"H0206","L":2,"t":"Personas y cosas","es":"Las sillas son 【blancas】.","en":"The chairs are *white*. (feminine plural → -as)","sw":[["rojas","red"],["nuevas","new"],["verdes","green"]]},{"id":"H0207","L":2,"t":"Personas y cosas","es":"Los libros son 【nuevos】.","en":"The books are *new*. (masculine plural → -os)","sw":[["viejos","old"],["amarillos","yellow"],["grandes","big"]]},{"id":"H0208","L":2,"t":"Personas y cosas","es":"Ana es 【alta】.","en":"Ana is *tall*.","sw":[["simpática","nice"],["inteligente","smart"],["joven","young"]]},{"id":"H0209","L":2,"t":"Personas y cosas","es":"Mateo es 【alto】 y simpático.","en":"Mateo is *tall* and nice.","sw":[["joven","young"],["inteligente","smart"],["bajo","short"]]},{"id":"H0210","L":2,"t":"Personas y cosas","es":"Es 【una mujer】 simpática.","en":"She's *a woman* who is nice. (adjective after the noun: una mujer simpática)","sw":[["una persona","a person"],["una chica","a girl"],["una niña","a little girl"]]},{"id":"H0211","L":2,"t":"Personas y cosas","es":"Es un carro 【viejo, pero bonito】.","en":"It's an *old, but nice* car.","sw":[["pequeño, pero nuevo","small, but new"],["grande, pero feo","big, but ugly"],["bonito, pero viejo","nice, but old"]]},{"id":"H0212","L":2,"t":"Personas y cosas","es":"¿De qué color es 【la bolsa】?","en":"What color is *the bag*? (lit. of what color)","sw":[["el carro","the car"],["la mesa","the table"],["tu celular","your cell phone"]]},{"id":"H0213","L":2,"t":"Personas y cosas","es":"¿Es 【tu】 bolígrafo?","en":"Is it *your* pen?","sw":[["mi","my"],["su","his/her"],["el","the"]]},{"id":"H0214","L":2,"t":"Personas y cosas","es":"【Once, doce, trece】.","en":"*Eleven, twelve, thirteen*.","sw":[["catorce, quince, dieciséis","fourteen, fifteen, sixteen"],["diecisiete, dieciocho","seventeen, eighteen"],["diecinueve, veinte","nineteen, twenty"]]},{"id":"H0301","L":3,"t":"¿Dónde está?","es":"¿Dónde está 【el baño】?","en":"Where is *the bathroom*?","sw":[["el banco","the bank"],["la estación","the station"],["el hotel","the hotel"]]},{"id":"H0302","L":3,"t":"¿Dónde está?","es":"【El banco】 está cerca.","en":"*The bank* is nearby.","sw":[["El parque","The park"],["La escuela","The school"],["El museo","The museum"]]},{"id":"H0303","L":3,"t":"¿Dónde está?","es":"El hotel está 【al lado del banco】.","en":"The hotel is *next to the bank*.","sw":[["enfrente de la estación","across from the station"],["detrás del museo","behind the museum"],["cerca del parque","near the park"]]},{"id":"H0304","L":3,"t":"¿Dónde está?","es":"La cocina está 【a la derecha】.","en":"The kitchen is *on the right*.","sw":[["a la izquierda","on the left"],["aquí","here"],["allí","over there"]]},{"id":"H0305","L":3,"t":"¿Dónde está?","es":"¿Hay 【un banco】 cerca?","en":"Is there *a bank* nearby?","sw":[["un hotel","a hotel"],["una tienda","a store"],["un supermercado","a supermarket"]]},{"id":"H0306","L":3,"t":"¿Dónde está?","es":"En mi calle hay 【un restaurante】.","en":"On my street there's *a restaurant*.","sw":[["dos tiendas","two stores"],["un parque","a park"],["un hospital","a hospital"]]},{"id":"H0307","L":3,"t":"¿Dónde está?","es":"¿Hay 【un baño】 aquí?","en":"Is there *a bathroom* here?","sw":[["un hotel","a hotel"],["una estación","a station"],["un banco","a bank"]]},{"id":"H0308","L":3,"t":"¿Dónde está?","es":"El libro está 【sobre la mesa】.","en":"The book is *on the table*.","sw":[["debajo de la mesa","under the table"],["en la bolsa","in the bag"],["al lado de la computadora","next to the computer"]]},{"id":"H0309","L":3,"t":"¿Dónde está?","es":"【Estoy】 en el hotel.","en":"*I'm* at the hotel. (estar = location)","sw":[["Estamos","We're"],["Están","They're"],["¿Estás","Are you"]]},{"id":"H0310","L":3,"t":"¿Dónde está?","es":"—¿Cómo estás? —【Estoy】 bien.","en":"\"How are you?\" \"*I'm* fine.\" (estar = how you are)","sw":[["Estamos","We're"],["Ana está","Ana is"],["Nosotros estamos","We're"]]},{"id":"H0311","L":3,"t":"¿Dónde está?","es":"La escuela está 【lejos】.","en":"The school is *far away*.","sw":[["cerca","nearby"],["en el centro","downtown"],["entre el banco y el parque","between the bank and the park"]]},{"id":"H0312","L":3,"t":"¿Dónde está?","es":"【Japón】 está lejos de México.","en":"*Japan* is far from Mexico.","sw":[["España","Spain"],["Argentina","Argentina"],["Colombia","Colombia"]]},{"id":"H0313","L":3,"t":"¿Dónde está?","es":"Mi departamento está 【en el centro】.","en":"My apartment is *downtown*.","sw":[["cerca de la estación","near the station"],["al lado del parque","next to the park"],["lejos del centro","far from downtown"]]},{"id":"H0314","L":3,"t":"¿Dónde está?","es":"Hay 【treinta y cinco】 estudiantes.","en":"There are *thirty-five* students.","sw":[["cuarenta y dos","forty-two"],["veintiún","twenty-one"],["cien","a hundred"]]},{"id":"H0401","L":4,"t":"Mi día","es":"【Hablo】 español.","en":"*I speak* Spanish.","sw":[["Hablas","You speak"],["Hablamos","We speak"],["Hablan","They speak"]]},{"id":"H0402","L":4,"t":"Mi día","es":"Trabajo 【en una oficina】.","en":"I work *in an office*.","sw":[["en casa","at home"],["en un hospital","in a hospital"],["en una tienda","in a store"]]},{"id":"H0403","L":4,"t":"Mi día","es":"【Como】 en casa.","en":"*I eat* at home.","sw":[["Comemos","We eat"],["Comes","You eat"],["Come","He eats"]]},{"id":"H0404","L":4,"t":"Mi día","es":"【Vivo】 en un departamento.","en":"*I live* in an apartment.","sw":[["Vivimos","We live"],["Vives","You live"],["Viven","They live"]]},{"id":"H0405","L":4,"t":"Mi día","es":"No 【bebo】 café.","en":"I don't *drink* coffee.","sw":[["tomo","drink (have)"],["compro","buy"],["necesito","need"]]},{"id":"H0406","L":4,"t":"Mi día","es":"¿Dónde 【trabajas】?","en":"Where *do you work*?","sw":[["vives","do you live"],["estudias","do you study"],["comes","do you eat"]]},{"id":"H0407","L":4,"t":"Mi día","es":"¿Qué 【estudias】?","en":"What *do you study*?","sw":[["lees","are you reading"],["escribes","are you writing"],["necesitas","do you need"]]},{"id":"H0408","L":4,"t":"Mi día","es":"¿Por qué 【estudias español】?","en":"Why *do you study Spanish*?","sw":[["vives en México","do you live in Mexico"],["no comes","aren't you eating"],["trabajas en casa","do you work at home"]]},{"id":"H0409","L":4,"t":"Mi día","es":"Estudio español porque 【vivo en México】.","en":"I study Spanish because *I live in Mexico*.","sw":[["necesito hablar español","I need to speak Spanish"],["trabajo en México","I work in Mexico"],["es interesante","it's interesting"]]},{"id":"H0410","L":4,"t":"Mi día","es":"【Corro】 todos los días.","en":"*I run* every day. (lit. all the days)","sw":[["Leo el periódico","I read the newspaper"],["Escucho música","I listen to music"],["Cocino","I cook"]]},{"id":"H0411","L":4,"t":"Mi día","es":"Hoy 【descanso】 en casa.","en":"Today *I'm resting* at home. (present = \"I'm ~ing\")","sw":[["trabajo","I'm working"],["como","I'm eating"],["estudio","I'm studying"]]},{"id":"H0412","L":4,"t":"Mi día","es":"【Necesito】 estudiar.","en":"*I need* to study.","sw":[["Necesitamos","We need"],["Necesitas","You need"],["Ana necesita","Ana needs"]]},{"id":"H0413","L":4,"t":"Mi día","es":"Escribo un mensaje 【a Lucía】.","en":"I'm writing a message *to Lucía*.","sw":[["a mi mamá","to my mom"],["a la profesora","to the teacher"],["a mis amigos","to my friends"]]},{"id":"H0414","L":4,"t":"Mi día","es":"¿Cuándo 【llegas】?","en":"When *do you arrive*?","sw":[["llega Ana","does Ana arrive"],["estudias","do you study"],["descansas","do you rest"]]},{"id":"H0415","L":4,"t":"Mi día","es":"Llamo 【a Lucía】.","en":"I call *Lucía*. (a before a person)","sw":[["a mi papá","my dad"],["a la profesora","the teacher"],["a Mateo","Mateo"]]},{"id":"H0501","L":5,"t":"Mi familia","es":"Tengo 【dos hermanos】.","en":"I have *two siblings*.","sw":[["un hermano","a brother"],["una hermana","a sister"],["tres hijos","three children"]]},{"id":"H0502","L":5,"t":"Mi familia","es":"¿Tienes 【hermanos】?","en":"Do you have *siblings*?","sw":[["hijos","children"],["novio","a boyfriend"],["perro","a dog"]]},{"id":"H0503","L":5,"t":"Mi familia","es":"Tengo 【treinta】 años.","en":"I'm *thirty*. (lit. I have thirty years)","sw":[["veinte","twenty"],["veinticinco","twenty-five"],["cuarenta","forty"]]},{"id":"H0504","L":5,"t":"Mi familia","es":"¿Cuántos años 【tienes】?","en":"How old *are you*? (lit. how many years do you have?)","sw":[["tiene tu hermano","is your brother"],["tiene usted","are you (formal)"],["tienen tus hijos","are your children"]]},{"id":"H0505","L":5,"t":"Mi familia","es":"Tengo 【hambre】.","en":"I'm *hungry*. (lit. I have hunger)","sw":[["sed","thirsty"],["frío","cold"],["sueño","sleepy"]]},{"id":"H0506","L":5,"t":"Mi familia","es":"Tengo que 【trabajar】.","en":"I have to *work*.","sw":[["estudiar","study"],["llamar a mi mamá","call my mom"],["comprar comida","buy food"]]},{"id":"H0507","L":5,"t":"Mi familia","es":"¿Tienes que 【trabajar】 hoy?","en":"Do you have to *work* today?","sw":[["estudiar","study"],["cocinar","cook"],["escribir un correo","write an email"]]},{"id":"H0508","L":5,"t":"Mi familia","es":"【Mi】 hermano es alto.","en":"*My* brother is tall.","sw":[["Tu","Your"],["Su","His/Her"],["Nuestro","Our"]]},{"id":"H0509","L":5,"t":"Mi familia","es":"【Mis】 padres viven en Japón.","en":"*My* parents live in Japan.","sw":[["Tus","Your"],["Sus","His/Her/Their"],["Nuestros","Our"]]},{"id":"H0510","L":5,"t":"Mi familia","es":"【Mi hermano mayor】 vive en Tokio.","en":"*My older brother* lives in Tokyo.","sw":[["Mi hermana menor","My younger sister"],["Mi tío","My uncle"],["Mi primo","My cousin"]]},{"id":"H0511","L":5,"t":"Mi familia","es":"Ana vive con 【sus padres】.","en":"Ana lives with *her parents*.","sw":[["su abuela","her grandmother"],["su novio","her boyfriend"],["su hermana","her sister"]]},{"id":"H0512","L":5,"t":"Mi familia","es":"La madre 【de Ana】 es colombiana.","en":"*Ana's* mother is Colombian. (lit. the mother of Ana)","sw":[["de Mateo","Mateo's"],["de mi esposo","my husband's"],["del profesor","the teacher's"]]},{"id":"H0513","L":5,"t":"Mi familia","es":"¿Estás 【casado】?","en":"Are you *married*? (to a man)","sw":[["casada","married (to a woman)"],["soltero","single (man)"],["soltera","single (woman)"]]},{"id":"H0514","L":5,"t":"Mi familia","es":"Tenemos 【un perro】 y dos gatos.","en":"We have *a dog* and two cats.","sw":[["un bebé","a baby"],["tres hijos","three children"],["una casa","a house"]]},{"id":"H0515","L":5,"t":"Mi familia","es":"No tengo 【dinero】.","en":"I don't have *money*.","sw":[["hermanos","siblings"],["perro","a dog"],["novia","a girlfriend"]]},{"id":"H0601","L":6,"t":"Me gusta","es":"Me gusta 【el café】.","en":"I like *coffee*. (lit. coffee pleases me)","sw":[["el té","tea"],["la fruta","fruit"],["el chocolate","chocolate"]]},{"id":"H0602","L":6,"t":"Me gusta","es":"Me gustan 【los tacos】.","en":"I like *tacos*. (plural thing → gustan)","sw":[["los plátanos","bananas"],["las películas mexicanas","Mexican movies"],["los deportes","sports"]]},{"id":"H0603","L":6,"t":"Me gusta","es":"Me gusta 【bailar】.","en":"I like *to dance*. (infinitive → gusta)","sw":[["cantar","to sing"],["nadar","to swim"],["viajar","to travel"]]},{"id":"H0604","L":6,"t":"Me gusta","es":"¿Te gusta 【el fútbol】?","en":"Do you like *soccer*?","sw":[["la playa","the beach"],["cocinar","to cook"],["el helado","ice cream"]]},{"id":"H0605","L":6,"t":"Me gusta","es":"A Mateo le 【gusta】 el fútbol.","en":"Mateo *likes* soccer. (lit. to Mateo, it pleases him)","sw":[["encanta","loves"],["gusta mucho","really likes"],["gusta más","likes more"]]},{"id":"H0606","L":6,"t":"Me gusta","es":"A mis padres 【les gusta】 viajar.","en":"My parents *like* to travel.","sw":[["les encanta","love"],["no les gusta","don't like"],["les gusta mucho","really like"]]},{"id":"H0607","L":6,"t":"Me gusta","es":"【Nos】 gusta la comida mexicana.","en":"*We* like Mexican food.","sw":[["Me","I"],["Les","They"],["Te","You"]]},{"id":"H0608","L":6,"t":"Me gusta","es":"Me 【encanta】 la música.","en":"I *love* music. (lit. music delights me)","sw":[["gusta","like"],["gusta mucho","really like"],["gusta más","like more"]]},{"id":"H0609","L":6,"t":"Me gusta","es":"Me encantan 【los frijoles】.","en":"I love *beans*.","sw":[["las verduras","vegetables"],["los videojuegos","video games"],["los helados","ice creams"]]},{"id":"H0610","L":6,"t":"Me gusta","es":"No me gusta 【nada】.","en":"I don't like it *at all*. (lit. it doesn't please me nothing)","sw":[["mucho","much"],["la cerveza","beer"],["nadar","swimming"]]},{"id":"H0611","L":6,"t":"Me gusta","es":"—Me gusta el té. —【A mí también】.","en":"\"I like tea.\" \"*Me too*.\"","sw":[["A mí no","I don't"],["A Mateo también","Mateo does too"],["A nosotros también","We do too"]]},{"id":"H0612","L":6,"t":"Me gusta","es":"—No me gusta la carne. —【A mí tampoco】.","en":"\"I don't like meat.\" \"*Me neither*.\"","sw":[["A mí sí","I do"],["A Ana tampoco","Ana doesn't either"],["A nosotros tampoco","We don't either"]]},{"id":"H0613","L":6,"t":"Me gusta","es":"Me gusta más 【el té】 que el café.","en":"I like *tea* more than coffee.","sw":[["el pescado","fish"],["el jugo","juice"],["la leche","milk"]]},{"id":"H0614","L":6,"t":"Me gusta","es":"Mi comida favorita es 【la sopa】.","en":"My favorite food is *soup*.","sw":[["el pollo","chicken"],["el arroz","rice"],["la ensalada","salad"]]},{"id":"H0615","L":6,"t":"Me gusta","es":"¡Qué 【rico】!","en":"How *tasty*!","sw":[["delicioso","delicious"],["bonito","pretty"],["grande","big"]]},{"id":"H0701","L":7,"t":"Mi rutina","es":"Me levanto 【a las siete】.","en":"I get up *at seven*.","sw":[["a las seis y media","at six thirty"],["a las ocho","at eight"],["temprano","early"]]},{"id":"H0702","L":7,"t":"Mi rutina","es":"¿A qué hora 【te levantas】?","en":"What time *do you get up*?","sw":[["desayunas","do you have breakfast"],["cenas","do you have dinner"],["llegas","do you arrive"]]},{"id":"H0703","L":7,"t":"Mi rutina","es":"【Me ducho】 por la mañana.","en":"*I shower* in the morning.","sw":[["Me arreglo","I get ready"],["Estudio","I study"],["Corro","I run"]]},{"id":"H0704","L":7,"t":"Mi rutina","es":"Mateo 【se ducha】 por la noche.","en":"Mateo *showers* at night.","sw":[["se baña","takes a bath"],["se lava los dientes","brushes his teeth"],["se arregla","gets ready"]]},{"id":"H0705","L":7,"t":"Mi rutina","es":"¿Qué hora es? —Son 【las dos】.","en":"What time is it? —It's *two*.","sw":[["las tres y media","three thirty"],["las ocho menos cuarto","quarter to eight"],["las diez y cuarto","quarter past ten"]]},{"id":"H0706","L":7,"t":"Mi rutina","es":"Es 【la una】.","en":"It's *one o'clock*. (la una → singular es)","sw":[["la una y media","one thirty"],["la una y cuarto","quarter past one"],["la una menos diez","ten to one"]]},{"id":"H0707","L":7,"t":"Mi rutina","es":"Estudio 【por la mañana】.","en":"I study *in the morning*.","sw":[["por la tarde","in the afternoon"],["por la noche","at night"],["los fines de semana","on weekends"]]},{"id":"H0708","L":7,"t":"Mi rutina","es":"【El lunes】 trabajo.","en":"*On Monday* I work.","sw":[["El martes","On Tuesday"],["El viernes","On Friday"],["Los sábados","On Saturdays"]]},{"id":"H0709","L":7,"t":"Mi rutina","es":"【Siempre】 desayuno en casa.","en":"I *always* have breakfast at home.","sw":[["A veces","sometimes"],["Normalmente","usually"],["Casi siempre","almost always"]]},{"id":"H0710","L":7,"t":"Mi rutina","es":"Nunca 【bebo café】 por la noche.","en":"I never *drink coffee* at night.","sw":[["estudio","study"],["como mucho","eat much"],["trabajo","work"]]},{"id":"H0711","L":7,"t":"Mi rutina","es":"Primero me ducho y luego 【desayuno】.","en":"First I shower and then *I have breakfast*.","sw":[["me arreglo","I get ready"],["me lavo los dientes","I brush my teeth"],["corro","I run"]]},{"id":"H0712","L":7,"t":"Mi rutina","es":"Después del trabajo, 【corro】.","en":"After work, *I run*.","sw":[["ceno con amigos","I have dinner with friends"],["descanso","I rest"],["me quedo en casa","I stay home"]]},{"id":"H0713","L":7,"t":"Mi rutina","es":"Antes de cenar, 【leo】.","en":"Before having dinner, *I read*.","sw":[["me ducho","I shower"],["me lavo las manos","I wash my hands"],["escucho música","I listen to music"]]},{"id":"H0714","L":7,"t":"Mi rutina","es":"Hoy 【me quedo】 en casa.","en":"Today *I'm staying* home.","sw":[["trabajo","I'm working"],["descanso","I'm resting"],["ceno","I'm having dinner"]]},{"id":"H0715","L":7,"t":"Mi rutina","es":"Cuando llego a casa, 【me ducho】.","en":"When I get home, *I shower*.","sw":[["ceno","I have dinner"],["descanso","I rest"],["llamo a mi mamá","I call my mom"]]},{"id":"H0801","L":8,"t":"Quiero, puedo","es":"Quiero 【un café】.","en":"I want *a coffee*.","sw":[["una cerveza","a beer"],["un vaso de agua","a glass of water"],["postre","dessert"]]},{"id":"H0802","L":8,"t":"Quiero, puedo","es":"【Quiero】 comer tacos.","en":"*I want* to eat tacos.","sw":[["Queremos","We want"],["¿Quieres","Do you want"],["Mateo quiere","Mateo wants"]]},{"id":"H0803","L":8,"t":"Quiero, puedo","es":"¿Puedo 【pagar con tarjeta】?","en":"Can I *pay by card*?","sw":[["abrir la ventana","open the window"],["repetir","repeat"],["cerrar la ventana","close the window"]]},{"id":"H0804","L":8,"t":"Quiero, puedo","es":"No puedo 【dormir】.","en":"I can't *sleep*.","sw":[["entender","understand"],["encontrar mis llaves","find my keys"],["almorzar hoy","have lunch today"]]},{"id":"H0805","L":8,"t":"Quiero, puedo","es":"¿Me trae 【la cuenta】, por favor?","en":"Can you bring me *the check*, please?","sw":[["el menú","the menu"],["un vaso de agua","a glass of water"],["otra cerveza","another beer"]]},{"id":"H0806","L":8,"t":"Quiero, puedo","es":"Me gustaría 【una mesa para dos】.","en":"I'd like *a table for two*.","sw":[["un café","a coffee"],["pagar","to pay"],["pedir postre","to order dessert"]]},{"id":"H0807","L":8,"t":"Quiero, puedo","es":"Quisiera 【pagar】, por favor.","en":"I'd like *to pay*, please.","sw":[["la cuenta","the check"],["una taza de té","a cup of tea"],["un postre","a dessert"]]},{"id":"H0808","L":8,"t":"Quiero, puedo","es":"【Pido】 un café.","en":"*I'm ordering* a coffee.","sw":[["Pedimos","We're ordering"],["¿Pides","Are you ordering"],["Ana pide","Ana is ordering"]]},{"id":"H0809","L":8,"t":"Quiero, puedo","es":"【Prefiero】 el té.","en":"*I prefer* tea.","sw":[["Preferimos","We prefer"],["¿Prefieres","Do you prefer"],["Mi mamá prefiere","My mom prefers"]]},{"id":"H0810","L":8,"t":"Quiero, puedo","es":"La clase empieza 【a las nueve】.","en":"Class starts *at nine*.","sw":[["a las diez y media","at ten thirty"],["temprano","early"],["el lunes","on Monday"]]},{"id":"H0811","L":8,"t":"Quiero, puedo","es":"【Vuelvo】 a casa a las seis.","en":"*I come back* home at six.","sw":[["Volvemos","We come back"],["¿Vuelves","Do you come back"],["Mi papá vuelve","My dad comes back"]]},{"id":"H0812","L":8,"t":"Quiero, puedo","es":"【Duermo】 ocho horas.","en":"*I sleep* eight hours.","sw":[["Dormimos","We sleep"],["¿Duermes","Do you sleep"],["El bebé duerme","The baby sleeps"]]},{"id":"H0813","L":8,"t":"Quiero, puedo","es":"¿Cuánto cuesta 【el café】?","en":"How much is *the coffee*? (lit. how much does it cost)","sw":[["la cerveza","the beer"],["el postre","the dessert"],["el menú del día","the set menu"]]},{"id":"H0814","L":8,"t":"Quiero, puedo","es":"【No entiendo】. ¿Puede repetir?","en":"*I don't understand*. Can you repeat? (formal)","sw":[["No entendemos","We don't understand"],["No entiendo bien","I don't understand well"],["Perdón, no entiendo","Sorry, I don't understand"]]},{"id":"H0815","L":8,"t":"Quiero, puedo","es":"Juego 【al fútbol】 los sábados.","en":"I play *soccer* on Saturdays. (jugar al + sport)","sw":[["videojuegos","video games"],["con mis hijos","with my kids"],["en el parque","in the park"]]},{"id":"H0901","L":9,"t":"Hago, salgo, vengo","es":"¿Qué 【haces】 el sábado?","en":"What *are you doing* on Saturday?","sw":[["hacen ustedes","are you all doing"],["hace Ana","is Ana doing"],["hacemos","are we doing"]]},{"id":"H0902","L":9,"t":"Hago, salgo, vengo","es":"【Hago】 la tarea por la tarde.","en":"*I do* my homework in the afternoon.","sw":[["Hacemos","We do"],["Mateo hace","Mateo does"],["¿Haces","Do you do"]]},{"id":"H0903","L":9,"t":"Hago, salgo, vengo","es":"【Salgo】 de casa a las ocho.","en":"*I leave* home at eight.","sw":[["Salimos","We leave"],["Mi papá sale","My dad leaves"],["¿Sales","Do you leave"]]},{"id":"H0904","L":9,"t":"Hago, salgo, vengo","es":"¿Sales con 【tus amigos】 el viernes?","en":"Are you going out with *your friends* on Friday?","sw":[["Ana","Ana"],["tu novio","your boyfriend"],["tus primos","your cousins"]]},{"id":"H0905","L":9,"t":"Hago, salgo, vengo","es":"【Voy】 a la escuela a pie.","en":"*I go* to school on foot.","sw":[["Vamos","We go"],["Mis hijos van","My kids go"],["¿Vas","Do you go"]]},{"id":"H0906","L":9,"t":"Hago, salgo, vengo","es":"Voy 【al cine】.","en":"I'm going *to the movies*. (a + el = al)","sw":[["a la playa","to the beach"],["al supermercado","to the supermarket"],["a la fiesta","to the party"]]},{"id":"H0907","L":9,"t":"Hago, salgo, vengo","es":"¿Vienes 【a la fiesta】?","en":"Are you coming *to the party*?","sw":[["al concierto","to the concert"],["al bar","to the bar"],["a mi casa","to my house"]]},{"id":"H0908","L":9,"t":"Hago, salgo, vengo","es":"【No sé】.","en":"*I don't know*.","sw":[["No sabemos","We don't know"],["Ana no sabe","Ana doesn't know"],["¿No sabes?","You don't know?"]]},{"id":"H0909","L":9,"t":"Hago, salgo, vengo","es":"¿Sabes 【cocinar】?","en":"Do you know how *to cook*? (saber + infinitive)","sw":[["nadar","to swim"],["bailar","to dance"],["hablar inglés","to speak English"]]},{"id":"H0910","L":9,"t":"Hago, salgo, vengo","es":"¿Conoces 【a Lucía】?","en":"Do you know *Lucía*? (people → conocer + a)","sw":[["a mi hermano","my brother"],["Guadalajara","Guadalajara"],["el museo","the museum"]]},{"id":"H0911","L":9,"t":"Hago, salgo, vengo","es":"Hoy hace 【calor】.","en":"Today it's *hot*. (lit. today it makes heat)","sw":[["frío","cold"],["sol","sunny"],["viento","windy"]]},{"id":"H0912","L":9,"t":"Hago, salgo, vengo","es":"En invierno 【nieva】.","en":"In winter *it snows*.","sw":[["hace frío","it's cold"],["no llueve","it doesn't rain"],["hace mal tiempo","the weather is bad"]]},{"id":"H0913","L":9,"t":"Hago, salgo, vengo","es":"Ana dice que 【no puede venir】.","en":"Ana says that *she can't come*.","sw":[["no tiene tiempo","she doesn't have time"],["tiene sueño","she's sleepy"],["viene tarde","she's coming late"]]},{"id":"H0914","L":9,"t":"Hago, salgo, vengo","es":"【Pongo】 las llaves en la mesa.","en":"*I put* the keys on the table.","sw":[["Siempre pongo","I always put"],["¿Dónde pones","Where do you put"],["Mateo pone","Mateo puts"]]},{"id":"H0915","L":9,"t":"Hago, salgo, vengo","es":"【Traigo】 el pan.","en":"*I'll bring* the bread. (lit. I bring)","sw":[["Traemos","We'll bring"],["¿Traes","Will you bring"],["Ana trae","Ana is bringing"]]},{"id":"H1001","L":10,"t":"Voy a…","es":"Voy a 【estudiar】 esta noche.","en":"I'm going to *study* tonight.","sw":[["cenar con Ana","have dinner with Ana"],["descansar","rest"],["ver una película","watch a movie"]]},{"id":"H1002","L":10,"t":"Voy a…","es":"【Voy a】 viajar en julio.","en":"*I'm going to* travel in July.","sw":[["Vamos a","We're going to"],["Mis padres van a","My parents are going to"],["¿Vas a","Are you going to"]]},{"id":"H1003","L":10,"t":"Voy a…","es":"¿Qué vas a hacer 【el sábado】?","en":"What are you going to do *on Saturday*?","sw":[["mañana","tomorrow"],["esta noche","tonight"],["el fin de semana","on the weekend"]]},{"id":"H1004","L":10,"t":"Voy a…","es":"【Mañana】 voy a la playa.","en":"*Tomorrow* I'm going to the beach.","sw":[["Pasado mañana","The day after tomorrow"],["La próxima semana","Next week"],["El próximo mes","Next month"]]},{"id":"H1005","L":10,"t":"Voy a…","es":"¿Vamos 【al cine】?","en":"Shall we go *to the movies*?","sw":[["a la playa","to the beach"],["juntos","together"],["a cenar","to have dinner"]]},{"id":"H1006","L":10,"t":"Voy a…","es":"Te invito 【a mi fiesta】.","en":"I'm inviting you *to my party*.","sw":[["a cenar","to dinner"],["un café","for a coffee (my treat)"],["a mi casa","to my house"]]},{"id":"H1007","L":10,"t":"Voy a…","es":"—¿Vienes? —【¡Claro!】","en":"\"Are you coming?\" \"*Of course!*\"","sw":[["Lo siento, no puedo","Sorry, I can't"],["¡Qué buena idea!","What a good idea!"],["Quizás","Maybe"]]},{"id":"H1008","L":10,"t":"Voy a…","es":"Lo siento, 【no puedo】.","en":"I'm sorry, *I can't*.","sw":[["tengo que trabajar","I have to work"],["voy a estar en Oaxaca","I'm going to be in Oaxaca"],["tengo planes","I have plans"]]},{"id":"H1009","L":10,"t":"Voy a…","es":"Mi cumpleaños es 【el cinco de mayo】.","en":"My birthday is *May fifth*. (lit. the five of May)","sw":[["el veinte de enero","January twentieth"],["en marzo","in March"],["el diez de octubre","October tenth"]]},{"id":"H1010","L":10,"t":"Voy a…","es":"Voy a visitar 【a mis abuelos】.","en":"I'm going to visit *my grandparents*. (personal a)","sw":[["el museo","the museum"],["Oaxaca","Oaxaca"],["a Lucía","Lucía"]]},{"id":"H1011","L":10,"t":"Voy a…","es":"Necesito comprar 【un boleto】.","en":"I need to buy *a ticket*.","sw":[["dos boletos","two tickets"],["un boleto de avión","a plane ticket"],["el boleto para el concierto","the ticket for the concert"]]},{"id":"H1012","L":10,"t":"Voy a…","es":"¿Adónde vas 【de vacaciones】?","en":"Where are you going *on vacation*?","sw":[["en diciembre","in December"],["mañana","tomorrow"],["con tu familia","with your family"]]},{"id":"H1013","L":10,"t":"Voy a…","es":"¿Cuál es tu 【número de teléfono】?","en":"What's your *phone number*? (lit. which is your)","sw":[["fecha de cumpleaños","birthday"],["plan","plan"],["idea","idea"]]},{"id":"H1014","L":10,"t":"Voy a…","es":"Siempre pido 【lo mismo】.","en":"I always order *the same thing*.","sw":[["tacos","tacos"],["un café","a coffee"],["postre","dessert"]]},{"id":"H1015","L":10,"t":"Voy a…","es":"¡Hasta 【mañana】!","en":"See you *tomorrow*!","sw":[["pronto","soon"],["luego","later"],["el lunes","Monday"]]},{"id":"H1101","L":11,"t":"¿Cuánto cuesta?","es":"¿Cuánto cuesta 【esta camisa】?","en":"How much is *this shirt*?","sw":[["este sombrero","this hat"],["ese suéter","that sweater"],["aquel vestido","that dress over there"]]},{"id":"H1102","L":11,"t":"¿Cuánto cuesta?","es":"¿Cuánto cuestan 【estos zapatos】?","en":"How much are *these shoes*?","sw":[["esos pantalones","those pants"],["estas camisetas","these T-shirts"],["aquellas faldas","those skirts over there"]]},{"id":"H1103","L":11,"t":"¿Cuánto cuesta?","es":"Busco 【unos zapatos negros】.","en":"I'm looking for *some black shoes*.","sw":[["una camisa blanca","a white shirt"],["un regalo para mi mamá","a gift for my mom"],["un hotel barato","a cheap hotel"]]},{"id":"H1104","L":11,"t":"¿Cuánto cuesta?","es":"¿Tiene 【una talla más grande】?","en":"Do you have *a bigger size*? (formal)","sw":[["una talla más pequeña","a smaller size"],["este suéter en azul","this sweater in blue"],["algo más barato","something cheaper"]]},{"id":"H1105","L":11,"t":"¿Cuánto cuesta?","es":"Es 【demasiado caro】.","en":"It's *too expensive*.","sw":[["muy barato","very cheap"],["un poco caro","a bit expensive"],["demasiado grande","too big"]]},{"id":"H1106","L":11,"t":"¿Cuánto cuesta?","es":"¿Puedo pagar 【en efectivo】?","en":"Can I pay *in cash*?","sw":[["con tarjeta","by card"],["en dólares","in dollars"],["mañana","tomorrow"]]},{"id":"H1107","L":11,"t":"¿Cuánto cuesta?","es":"Estoy 【cansado】.","en":"I'm *tired*. (estar = how you are right now)","sw":[["contento","happy"],["ocupado","busy"],["enfermo","sick"]]},{"id":"H1108","L":11,"t":"¿Cuánto cuesta?","es":"Ana está 【cansada】 hoy.","en":"Ana is *tired* today.","sw":[["enojada","mad"],["nerviosa","nervous"],["preocupada","worried"]]},{"id":"H1109","L":11,"t":"¿Cuánto cuesta?","es":"Ana 【es muy lista】.","en":"Ana *is very clever*. (ser = trait; estar = state)","sw":[["está lista","is ready"],["es aburrida","is boring"],["está aburrida","is bored"]]},{"id":"H1110","L":11,"t":"¿Cuánto cuesta?","es":"Estoy 【estudiando】.","en":"I'm *studying* (right now). (estar + -ando/-iendo)","sw":[["trabajando","working"],["comiendo","eating"],["escribiendo un mensaje","writing a message"]]},{"id":"H1111","L":11,"t":"¿Cuánto cuesta?","es":"¿Qué estás 【haciendo】?","en":"What are you *doing*?","sw":[["comiendo","eating"],["leyendo","reading"],["buscando","looking for"]]},{"id":"H1112","L":11,"t":"¿Cuánto cuesta?","es":"Mateo está 【durmiendo】.","en":"Mateo is *sleeping*.","sw":[["jugando al fútbol","playing soccer"],["viendo la televisión","watching TV"],["cocinando","cooking"]]},{"id":"H1113","L":11,"t":"¿Cuánto cuesta?","es":"Hoy llevo 【una camisa azul】.","en":"Today I'm wearing *a blue shirt*.","sw":[["un vestido rojo","a red dress"],["un abrigo negro","a black coat"],["un sombrero","a hat"]]},{"id":"H1114","L":11,"t":"¿Cuánto cuesta?","es":"Me gusta 【esa】 falda.","en":"I like *that* skirt.","sw":[["esta","this"],["aquella","that (over there)"],["tu","your"]]},{"id":"H1115","L":11,"t":"¿Cuánto cuesta?","es":"Hablo 【un poco】 de español.","en":"I speak *a little* Spanish.","sw":[["muy poco","very little"],["bien","well"],["mucho","a lot"]]},{"id":"H1201","L":12,"t":"Ayer…","es":"Ayer 【trabajé】 mucho.","en":"Yesterday *I worked* a lot.","sw":[["estudié","I studied"],["caminé","I walked"],["comí","I ate"]]},{"id":"H1202","L":12,"t":"Ayer…","es":"¿Qué 【comiste】 ayer?","en":"What *did you eat* yesterday?","sw":[["compraste","did you buy"],["estudiaste","did you study"],["bebiste","did you drink"]]},{"id":"H1203","L":12,"t":"Ayer…","es":"Anoche 【cené】 con Ana.","en":"Last night *I had dinner* with Ana.","sw":[["salí","I went out"],["bailé","I danced"],["hablé","I talked"]]},{"id":"H1204","L":12,"t":"Ayer…","es":"Ana 【llegó】 tarde.","en":"Ana *arrived* late.","sw":[["se levantó","got up"],["volvió","came back"],["terminó","finished"]]},{"id":"H1205","L":12,"t":"Ayer…","es":"【Comimos】 en un restaurante.","en":"*We ate* at a restaurant.","sw":[["Cenamos","We had dinner"],["Bailamos","We danced"],["Nos quedamos","We stayed"]]},{"id":"H1206","L":12,"t":"Ayer…","es":"Mis padres 【viajaron】 a Japón.","en":"My parents *traveled* to Japan.","sw":[["volvieron","came back"],["llegaron","arrived"],["vivieron","lived"]]},{"id":"H1207","L":12,"t":"Ayer…","es":"Ayer 【fui】 al cine.","en":"Yesterday *I went* to the movies. (ir: fui, fue, fuimos, fueron)","sw":[["fuimos","we went"],["Ana fue","Ana went"],["mis amigos fueron","my friends went"]]},{"id":"H1208","L":12,"t":"Ayer…","es":"La fiesta 【fue】 muy divertida.","en":"The party *was* really fun. (ser has the same past as ir)","sw":[["El concierto fue","The concert was"],["La película fue","The movie was"],["El viaje fue","The trip was"]]},{"id":"H1209","L":12,"t":"Ayer…","es":"La semana pasada 【visité】 a mis abuelos.","en":"Last week *I visited* my grandparents.","sw":[["llamé","I called"],["escribí","I wrote"],["invité","I invited"]]},{"id":"H1210","L":12,"t":"Ayer…","es":"¿Ya 【terminaste】 la tarea?","en":"Did you already *finish* the homework?","sw":[["empezaste","start"],["escribiste","write"],["leíste","read"]]},{"id":"H1211","L":12,"t":"Ayer…","es":"Perdí 【mi celular】.","en":"I lost *my phone*.","sw":[["mis llaves","my keys"],["el autobús","the bus (missed)"],["el partido","the match"]]},{"id":"H1212","L":12,"t":"Ayer…","es":"Olvidé 【mis llaves】.","en":"I forgot *my keys*.","sw":[["el regalo","the gift"],["tu nombre","your name"],["la tarea","the homework"]]},{"id":"H1213","L":12,"t":"Ayer…","es":"【Recibí】 un mensaje de Ana.","en":"*I got* a message from Ana.","sw":[["Escribí","I wrote"],["Leí","I read"],["Abrí","I opened"]]},{"id":"H1214","L":12,"t":"Ayer…","es":"Por fin 【terminé la tarea】.","en":"I finally *finished the homework*.","sw":[["llegué a casa","got home"],["encontré mis llaves","found my keys"],["gané el partido","won the match"]]},{"id":"H1215","L":12,"t":"Ayer…","es":"Al final, 【decidimos cenar en casa】.","en":"In the end, *we decided to have dinner at home*.","sw":[["no compré nada","I didn't buy anything"],["me quedé en casa","I stayed home"],["Ana llegó","Ana arrived"]]}];
+
+const KEY="habla_v1";
+const S=load(KEY,{d:{},star:{},cfg:{},lastBackup:0});
+S.cfg=Object.assign({lo:1,hi:getLevel(),src:"all",gap:1,rate:0.95,rounds:16,esURI:"",enURI:""},S.cfg||{});
+TTSCFG.esURI=S.cfg.esURI;TTSCFG.enURI=S.cfg.enURI;
+const save=()=>store(KEY,S);
+const D={};DRILLS.forEach(d=>D[d.id]=d);
+const LS=[...new Set(DRILLS.map(d=>d.L))].sort((a,b)=>a-b);
+const maxL=LS[LS.length-1];
+S.cfg.hi=Math.min(Math.max(S.cfg.hi,S.cfg.lo),maxL);S.cfg.lo=Math.min(S.cfg.lo,S.cfg.hi);
+window.__habla={S,D};
+/* variant v: -1 = anchor, i = swap i */
+function fill(d,v){if(v<0)return{es:d.es.replace(/[【】]/g,""),en:d.en.replace(/\*/g,"")};
+  const [a,b]=d.sw[v];return{es:d.es.replace(/【.*?】/,a),en:d.en.replace(/\*.*?\*/,b)};}
+const cueText=en=>en.replace(/\(([^)]*)\)/g,"").replace(/\s+/g," ").trim();
+const cueNote=en=>{const m=en.match(/\(([^)]*)\)/);return m?m[1]:"";};
+const slotHTML=d=>esc(d.es).replace(/【(.*?)】/,'<span class="slot">$1</span>');
+const mastery=id=>(S.d[id]||{}).ok||0;
+function touch(id,f){const r=S.d[id]||(S.d[id]={n:0,ok:0,miss:0,at:0});f(r);r.at=now();save();}
+function pool(){return DRILLS.filter(d=>d.L>=S.cfg.lo&&d.L<=S.cfg.hi&&(S.cfg.src!=="star"||S.star[d.id]));}
+function weight(d){const r=S.d[d.id]||{};let w=(r.ok||0)>=3?1:3;if(d.L>=S.cfg.hi-1)w*=2;if((r.miss||0)>(r.ok||0))w*=1.5;if(S.star[d.id])w*=1.5;return w;}
+function pickRounds(n){const p=pool();if(!p.length)return[];const out=[];let last=null;
+  for(let i=0;i<n;i++){let tot=0;const ws=p.map(d=>{const w=d.id===last&&p.length>1?0:weight(d);tot+=w;return w;});
+    let r=Math.random()*tot,j=0;while(j<p.length-1&&(r-=ws[j])>0)j++;
+    const d=p[j];last=d.id;const m=mastery(d.id);
+    const v=(m<2&&Math.random()<0.5)||!d.sw.length?-1:Math.floor(Math.random()*d.sw.length);
+    out.push({id:d.id,v,full:m<3});}
+  return out;}
+function rangeHTML(){const opt=v=>LS.map(L=>`<option value="${L}"${L===v?" selected":""}>L${L}</option>`).join("");
+  return `<div class="box"><div class="kv"><span>Lessons</span><span><select id="r-lo">${opt(S.cfg.lo)}</select> – <select id="r-hi">${opt(S.cfg.hi)}</select></span></div>
+   <div class="kv"><span>Drills</span><span class="chips" id="r-src"><button data-v="all" class="${S.cfg.src==="all"?"on":""}">All</button><button data-v="star" class="${S.cfg.src==="star"?"on":""}">★ only</button></span></div>
+   <div class="note" id="r-n"></div></div>`;}
+function bindRange(re){$("#r-lo").onchange=e=>{S.cfg.lo=+e.target.value;if(S.cfg.hi<S.cfg.lo)S.cfg.hi=S.cfg.lo;save();re();};
+  $("#r-hi").onchange=e=>{S.cfg.hi=+e.target.value;if(S.cfg.lo>S.cfg.hi)S.cfg.lo=S.cfg.hi;setLevel(Math.max(getLevel(),S.cfg.hi));save();re();};
+  $$("#r-src button").forEach(b=>b.onclick=()=>{S.cfg.src=b.dataset.v;save();re();});
+  const p=pool();$("#r-n").textContent=`${p.length} patterns · ${p.reduce((a,d)=>a+1+d.sw.length,0)} sentences. Newest lessons and shaky patterns come up more often.`;}
+
+let TAB="manos";
+$$("#tabs button").forEach(b=>b.onclick=()=>{halt();TAB=b.dataset.t;$$("#tabs button").forEach(x=>x.classList.toggle("on",x===b));render();});
+function render(){({manos:rManos,tarjetas:rTarjetas,lista:rLista,ajustes:rAjustes})[TAB]();window.scrollTo(0,0);}
+
+/* ---------- MANOS LIBRES ---------- */
+let RUN=null; // {rounds,i,paused,token}
+function halt(){if(RUN){RUN.token++;RUN=null;}stopSpeech();}
+function rManos(){
+  $("#main").innerHTML=rangeHTML()+`<div class="box"><p>Hear the English, <b>say it in Spanish out loud</b> in the gap, then hear the answer. New patterns play twice (slow, then normal); patterns you know switch to their swaps at full speed.</p>
+   <div class="row" style="margin-top:12px"><button class="big pri" id="start" style="flex:1">▶ Start · ${S.cfg.rounds} rounds</button></div></div>`;
+  bindRange(rManos);
+  $("#start").onclick=()=>{const r=pickRounds(S.cfg.rounds);if(!r.length){toast("No drills in that range.");return;}
+    RUN={rounds:r,i:0,paused:false,token:0};playScreen();runLoop();};}
+function playScreen(){
+  $("#main").innerHTML=`<div class="stage"><div class="phase" id="ph">Listen</div><div class="cue" id="cue"></div><div class="ans wait" id="ans">· · ·</div><div class="bar"><i id="bar"></i></div></div>
+   <div class="ctl"><button id="pp">⏸</button><button id="nx">⏭</button><button id="st">■</button></div><p class="note" id="cnt" style="text-align:center"></p>`;
+  $("#pp").onclick=()=>{if(!RUN)return;RUN.paused=!RUN.paused;$("#pp").textContent=RUN.paused?"▶":"⏸";
+    if(RUN.paused){RUN.token++;stopSpeech();$("#ph").textContent="Paused";}else runLoop();};
+  $("#nx").onclick=()=>{if(!RUN)return;RUN.token++;stopSpeech();RUN.i++;RUN.paused=false;$("#pp").textContent="⏸";runLoop();};
+  $("#st").onclick=()=>{halt();rManos();};}
+async function runLoop(){if(!RUN)return;const tok=++RUN.token,alive=()=>RUN&&RUN.token===tok&&!RUN.paused;
+  while(RUN&&RUN.i<RUN.rounds.length){
+    const R=RUN.rounds[RUN.i],d=D[R.id],f=fill(d,R.v);
+    $("#cnt").textContent=`${RUN.i+1} / ${RUN.rounds.length} · L${d.L} ${d.t}`;
+    $("#cue").innerHTML=esc(cueText(f.en))+(cueNote(f.en)?`<span class="note2">${esc(cueNote(f.en))}</span>`:"");
+    $("#ans").textContent="· · ·";$("#ans").classList.add("wait");$("#ph").textContent="Listen";$("#bar").style.transition="none";$("#bar").style.width="0";
+    await speak(cueText(f.en),"en",1);if(!alive())return;
+    const gap=(2200+f.es.length*110)*S.cfg.gap;
+    $("#ph").textContent="Your turn · say it";
+    requestAnimationFrame(()=>{$("#bar").style.transition=`width ${gap}ms linear`;$("#bar").style.width="100%";});
+    await wait(gap);if(!alive())return;
+    $("#ph").textContent="Answer";$("#ans").textContent=f.es;$("#ans").classList.remove("wait");
+    if(R.full){await speak(f.es,"es",Math.max(0.7,S.cfg.rate-0.17));if(!alive())return;await wait(500);if(!alive())return;}
+    await speak(f.es,"es",S.cfg.rate);if(!alive())return;
+    touch(d.id,r=>{r.n++;});
+    await wait(900);if(!alive())return;
+    RUN.i++;}
+  if(RUN){const n=RUN.rounds.length;halt();$("#main").innerHTML=`<div class="box" style="text-align:center;padding:28px"><div style="font-size:40px">🎉</div><p style="margin-top:8px">¡Muy bien! ${n} rounds done.</p>
+    <div class="row" style="justify-content:center;margin-top:14px"><button class="pri" id="again">▶ Again</button><button id="tj">Tarjetas →</button></div></div>`;
+    $("#again").onclick=()=>{const r=pickRounds(S.cfg.rounds);RUN={rounds:r,i:0,paused:false,token:0};playScreen();runLoop();};
+    $("#tj").onclick=()=>$('[data-t="tarjetas"]').click();}}
+
+/* ---------- TARJETAS ---------- */
+let TQ=null,TT=0,TMISS=[];
+function rTarjetas(){
+  $("#main").innerHTML=rangeHTML()+`<div class="box"><p>Read the English, say the Spanish, then check. ✓ / ✗ teaches the app which patterns you own; Manos libres uses that to pick rounds.</p>
+   <div class="row" style="margin-top:12px"><button class="big pri" id="go" style="flex:1">🔀 20 cards</button><button class="big" id="go2">All</button></div></div>`;
+  bindRange(rTarjetas);
+  const go=n=>{let items=[];pool().forEach(d=>{items.push({id:d.id,v:-1});d.sw.forEach((_,i)=>items.push({id:d.id,v:i}));});
+    if(!items.length){toast("No drills in that range.");return;}
+    shuffle(items);if(n)items=items.slice(0,n);TQ=items;TT=items.length;TMISS=[];tCard();};
+  $("#go").onclick=()=>go(20);$("#go2").onclick=()=>go(0);}
+function tCard(){if(!TQ.length)return tEnd();
+  const it=TQ[0],d=D[it.id],f=fill(d,it.v);let shown=false;
+  $("#main").innerHTML=`<div class="prog"><i style="width:${Math.round(100*(TT-TQ.length)/TT)}%"></i></div>
+   <div class="card2" id="card"><div class="row" style="justify-content:space-between"><span class="phase">L${d.L} · ${esc(d.t)}</span><button class="star" id="st">${S.star[d.id]?"★":"☆"}</button></div>
+   <div class="front"><div class="cue">${esc(cueText(f.en))}${cueNote(f.en)?`<span class="note2">${esc(cueNote(f.en))}</span>`:""}</div>
+   <div class="ans wait" id="ans">· · ·</div></div>
+   <div id="sb"><button class="big pri" style="width:100%" id="show">Show</button></div>
+   <div id="gb" class="row hide"><button class="big" style="flex:1;border-color:var(--grana)" id="no">✗ Not yet</button><button class="big" style="flex:1;border-color:var(--verde)" id="yes">✓ Got it</button></div>
+   <div class="row" style="justify-content:center;margin-top:10px"><button class="ghost" id="q">End</button></div></div>`;
+  const reveal=()=>{if(shown)return;shown=true;$("#ans").textContent=f.es;$("#ans").classList.remove("wait");$("#sb").classList.add("hide");$("#gb").classList.remove("hide");speak(f.es,"es",S.cfg.rate);};
+  $("#show").onclick=reveal;$("#card").onclick=e=>{if(!e.target.closest("button"))reveal();};
+  $("#ans").onclick=()=>shown&&speak(f.es,"es",S.cfg.rate);
+  $("#st").onclick=e=>{e.stopPropagation();if(S.star[d.id])delete S.star[d.id];else S.star[d.id]=now();save();$("#st").textContent=S.star[d.id]?"★":"☆";};
+  $("#no").onclick=()=>{stopSpeech();touch(d.id,r=>{r.miss++;r.n++;});TMISS.push(it);const x=TQ.shift();TQ.splice(Math.min(4,TQ.length),0,x);tCard();};
+  $("#yes").onclick=()=>{stopSpeech();touch(d.id,r=>{r.ok++;r.n++;});TQ.shift();tCard();};
+  $("#q").onclick=()=>{stopSpeech();TQ=[];tEnd();};}
+function tEnd(){const uniq=[...new Map(TMISS.map(x=>[x.id+":"+x.v,x])).values()];
+  $("#main").innerHTML=`<div class="box" style="text-align:center"><div style="font-size:40px">${uniq.length?"💪":"🎉"}</div><p>${TT} cards · ${uniq.length} to work on</p></div>
+   ${uniq.length?`<div class="box">${uniq.map(x=>{const f=fill(D[x.id],x.v);return `<div class="d"><div class="es">${esc(f.es)}</div><div class="en">${esc(f.en)}</div></div>`;}).join("")}
+   <div class="row" style="margin-top:10px"><button class="pri" id="again">Again, just these</button></div></div>`:""}
+   <div class="row"><button id="back">Back</button></div>`;
+  $("#back").onclick=rTarjetas;const a=$("#again");if(a)a.onclick=()=>{TQ=shuffle(uniq.slice());TT=TQ.length;TMISS=[];tCard();};}
+
+/* ---------- LISTA ---------- */
+const OPEN=new Set([Math.min(getLevel(),maxL)]);
+function rLista(){
+  $("#main").innerHTML=`<p class="note" style="margin:0 0 12px">Every pattern with its swaps. Tap a sentence (or a swap) to hear it. The red part is the slot that changes.</p>`+LS.map(L=>{
+    const ds=DRILLS.filter(d=>d.L===L),open=OPEN.has(L),seen=ds.filter(d=>mastery(d.id)>=3).length;
+    return `<div class="lesson"><div class="lh" data-l="${L}"><div class="t"><b>L${L} · ${esc((LESSONS[L]||[""])[0])}</b><div class="c">${ds.length} patterns · ${seen} solid</div></div><span class="dim">${open?"▾":"▸"}</span></div>
+     ${open?`<div class="lb">${ds.map(d=>`<div class="d"><div class="row" style="justify-content:space-between;flex-wrap:nowrap"><div>
+       <div class="es" data-p="${d.id}|-1">${slotHTML(d)}</div><div class="en">${esc(d.en.replace(/\*/g,""))}</div></div>
+       <div style="text-align:right"><button class="star" data-star="${d.id}">${S.star[d.id]?"★":"☆"}</button><div class="dots">${"●".repeat(Math.min(5,mastery(d.id)))}</div></div></div>
+       <div class="sw">${d.sw.map((s,i)=>`<span data-p="${d.id}|${i}">${esc(s[0])}</span>`).join("")}</div></div>`).join("")}</div>`:""}</div>`;}).join("");
+  $$("[data-l]").forEach(h=>h.onclick=()=>{const L=+h.dataset.l;OPEN.has(L)?OPEN.delete(L):OPEN.add(L);rLista();});
+  $$("[data-p]").forEach(el=>el.onclick=()=>{const [id,v]=el.dataset.p.split("|");speak(fill(D[id],+v).es,"es",S.cfg.rate);});
+  $$("[data-star]").forEach(b=>b.onclick=()=>{const id=b.dataset.star;if(S.star[id])delete S.star[id];else S.star[id]=now();save();b.textContent=S.star[id]?"★":"☆";});}
+
+/* ---------- AJUSTES ---------- */
+let resetArm=false;
+function rAjustes(){const ids=Object.keys(S.d);
+  $("#main").innerHTML=`<div class="box"><div class="kv"><span>Patterns practiced</span><b>${ids.length} / ${DRILLS.length}</b></div>
+    <div class="kv"><span>Solid (3+ ✓ in Tarjetas)</span><b>${ids.filter(i=>mastery(i)>=3).length}</b></div></div>
+   <div class="sec">Manos libres</div><div class="box">
+    <div class="kv"><span>Thinking gap</span><span class="chips" id="c-gap">${[[0.8,"Short"],[1,"Normal"],[1.3,"Long"],[1.6,"Very long"]].map(([v,t])=>`<button data-v="${v}" class="${S.cfg.gap===v?"on":""}">${t}</button>`).join("")}</span></div>
+    <div class="kv"><span>Rounds</span><span class="chips" id="c-rounds">${[10,16,24,40].map(v=>`<button data-v="${v}" class="${S.cfg.rounds===v?"on":""}">${v}</button>`).join("")}</span></div>
+    <div class="kv"><span>Spanish speed</span><span class="chips" id="c-rate">${[0.8,0.95,1.05].map(v=>`<button data-v="${v}" class="${S.cfg.rate===v?"on":""}">${v}×</button>`).join("")}</span></div></div>
+   <div class="sec">Audio</div><div class="box">${voiceUI(S.cfg)}</div>
+   <div class="sec">Backup</div><div class="box">${backupUI()}</div>
+   <div class="sec">Danger zone</div><div class="box"><button id="reset" style="border-color:var(--grana)">Reset all Habla progress</button><div class="note">Tap twice.</div></div>
+   <p class="note">Habla · ${DRILLS.length} patterns · APPV ${APPV_NOW}</p>`;
+  [["#c-gap","gap"],["#c-rounds","rounds"],["#c-rate","rate"]].forEach(([s,k])=>$$(s+" button").forEach(b=>b.onclick=()=>{S.cfg[k]=+b.dataset.v;save();rAjustes();}));
+  bindVoiceUI(S.cfg,save);bindBackupUI([KEY,"hilo_level"],()=>{S.lastBackup=now();save();});
+  $("#reset").onclick=()=>{if(!resetArm){resetArm=true;$("#reset").textContent="Tap again to erase";return;}S.d={};S.star={};save();resetArm=false;toast("Reset.");rAjustes();};}
+const APPV_NOW="2026.11.22-1";
+render();
+})();
+</script>
+<script>
+/* auto-updater (own key hiloUpdHabla) */
+(function(){var APPV="2026.11.22-1";
+try{if(sessionStorage.getItem("hiloUpdHabla")===APPV)return;}catch(e){}
+fetch(location.pathname+"?vc="+Date.now(),{cache:"no-store"})
+ .then(function(r){return r.ok?r.text():""})
+ .then(function(t){var m=t&&t.match(/APPV="([^"]+)"/);
+   if(m&&m[1]!==APPV){try{sessionStorage.setItem("hiloUpdHabla",m[1]);}catch(e){}
+     location.replace(location.pathname+"?v="+encodeURIComponent(m[1]));}})
+ .catch(function(){});})();
+</script>
+</body>
+</html>
